@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Shopping List</string>
+    <string name="start_title">Start menu</string>
+    <string name="history_title">Shopping history</string>
+    <string name="analysis_title">Shopping analysis</string>
+    <string name="options_title">Options</string>
+    <string name="exit">Exit</string>
+
     <string name="create_list">Create new list</string>
+    <string name="finish_shipping">Finish shopping</string>
 </resources>
