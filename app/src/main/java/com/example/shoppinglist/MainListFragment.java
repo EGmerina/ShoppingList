@@ -1,5 +1,7 @@
 package com.example.shoppinglist;
 
+import android.widget.ImageButton;
+
 import androidx.fragment.app.Fragment;
 
 public class MainListFragment extends Fragment {
@@ -13,6 +15,16 @@ public class MainListFragment extends Fragment {
         items.add(new ShoppingItem("Weekend BBQ", "13-12-2025", android.graphics.Color.YELLOW));
 
         listView.setAdapter(new ShoppingAdapter(getContext(), items));
+
+        ImageButton btnMenu = view.findViewById(R.id.btn_menu);
+
+        btnMenu.setOnClickListener(v -> {
+            // Получаем доступ к MainActivity и вызываем созданный нами метод
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).openDrawer();
+            }
+        });
+
         return view;
     }
 }

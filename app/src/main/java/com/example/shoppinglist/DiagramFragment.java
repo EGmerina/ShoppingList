@@ -1,5 +1,7 @@
 package com.example.shoppinglist;
 
+import android.widget.ImageButton;
+
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -26,6 +28,16 @@ public class DiagramFragment extends Fragment {
         pieChart.getDescription().setEnabled(false);
         pieChart.animateY(1000); // Анимация появления
         pieChart.invalidate();
+
+
+        ImageButton btnMenu = view.findViewById(R.id.btn_menu);
+
+        btnMenu.setOnClickListener(v -> {
+            // Получаем доступ к MainActivity и вызываем созданный нами метод
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).openDrawer();
+            }
+        });
 
         return view;
     }

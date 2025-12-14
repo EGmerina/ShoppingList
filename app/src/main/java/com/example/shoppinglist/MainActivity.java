@@ -18,28 +18,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showFragment(new MainListFragment(), getString(R.string.app_name));
+        showFragment(new MainListFragment());
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
-        ImageButton btnMenu = findViewById(R.id.btn_menu);
-
-        btnMenu.setOnClickListener(v -> {
-            drawerLayout.openDrawer(GravityCompat.START);
-        });
 
         findViewById(R.id.btn_nav_start).setOnClickListener(v -> {
-            showFragment(new MainListFragment(), getString(R.string.app_name));
+            showFragment(new MainListFragment());
             drawerLayout.closeDrawer(GravityCompat.START);
         });
 
         findViewById(R.id.btn_nav_history).setOnClickListener(v -> {
-            showFragment(new HistoryFragment(), getString(R.string.history_title));
+            showFragment(new HistoryFragment());
             drawerLayout.closeDrawer(GravityCompat.START);
         });
 
         findViewById(R.id.btn_nav_diagram).setOnClickListener(v -> {
-            showFragment(new DiagramFragment(), getString(R.string.analysis_title));
+            showFragment(new DiagramFragment());
             drawerLayout.closeDrawer(GravityCompat.START);
         });
 
@@ -47,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showFragment(Fragment fragment, String title) {
+    private void showFragment(Fragment fragment) {
         if (findViewById(R.id.fragment_container) == null) {
             System.out.println("can't find fragment_container");
             return;
@@ -55,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
+    }
 
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        if (toolbarTitle != null) {
-            toolbarTitle.setText(title);
+    public void openDrawer() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        if (drawerLayout != null) {
+            drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 }
