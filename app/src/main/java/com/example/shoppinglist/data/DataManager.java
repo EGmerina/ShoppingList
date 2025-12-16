@@ -15,33 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
-    private static final String FILE_NAME = "shopping_lists_data.json";
+    private static final String FILE_TEMPLATES = "template_lists.json";
+    private static final String FILE_HISTORY = "history_lists.json";
 
-    /**
-     * Метод для сохранения списка списков
-     *
-     * @param context       нужен для доступа к файловой системе
-     * @param shoppingLists список, который хотим сохранить
-     */
-    public static void saveLists(Context context, List<ShoppingList> shoppingLists) {
+    private static void saveTo(Context context, List<ShoppingList> lists, String fileName) {
         Gson gson = new Gson();
-        String jsonString = gson.toJson(shoppingLists);
-        try (FileOutputStream fos = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)) {
-            fos.write(jsonString.getBytes());
+        String json = gson.toJson(lists);
+        try (FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+            fos.write(json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Метод для чтения данных при запуске
-     *
-     * @return возвращает сохраненный список или пустой список, если файла нет
-     */
-    public static List<ShoppingList> loadLists(Context context) {
+    private static List<ShoppingList> loadFrom(Context context, String fileName) {
         Gson gson = new Gson();
 
-        try (FileInputStream fis = context.openFileInput(FILE_NAME);
+        try (FileInputStream fis = context.openFileInput(fileName);
              InputStreamReader isr = new InputStreamReader(fis);
              BufferedReader reader = new BufferedReader(isr)) {
 
@@ -64,4 +54,21 @@ public class DataManager {
             return new ArrayList<ShoppingList>();
         }
     }
+
+    public static void saveTemplate(Context context, List<ShoppingList> lists) {
+        saveTo(context, lists, FILE_TEMPLATES);
+    }
+
+    public static List<ShoppingList> loadActive(Context context) {
+        return loadFrom(context, FILE_TEMPLATES);
+    }
+
+    public static void saveHistory(Context context, List<ShoppingList> lists) {
+        saveTo(context, lists, FILE_HISTORY);
+    }
+
+    public static List<ShoppingList> loadHistory(Context context) {
+        return loadFrom(context, FILE_HISTORY);
+    }
+
 }

@@ -12,28 +12,47 @@ import com.example.shoppinglist.data.ShoppingList;
 import java.util.List;
 
 public class ShoppingViewModel extends ViewModel {
-    private MutableLiveData<List<ShoppingList>> allLists = null;
+    private MutableLiveData<List<ShoppingList>> templateLists = null;
+    private MutableLiveData<List<ShoppingList>> historyLists = null;
 
-    public LiveData<List<ShoppingList>> getAllLists(Context context) {
-        if (allLists == null) {
-            allLists = new MutableLiveData<>();
-            allLists.setValue(DataManager.loadLists(context));
+    public LiveData<List<ShoppingList>> getTemplateLists(Context context) {
+        if (templateLists == null) {
+            templateLists = new MutableLiveData<>();
+            templateLists.setValue(DataManager.loadActive(context));
         }
-        return allLists;
+        return templateLists;
     }
 
-    public void addList(Context context, ShoppingList newList) { //TODO проверка на null
-        List<ShoppingList> current = allLists.getValue();
+    public LiveData<List<ShoppingList>> getHistoryLists(Context context) {
+        if (historyLists == null) {
+            historyLists = new MutableLiveData<>();
+            historyLists.setValue(DataManager.loadHistory(context));
+        }
+        return historyLists;
+    }
+
+
+    public void addTemplateList(Context context, ShoppingList list) {
+        List<ShoppingList> current = templateLists.getValue();
         if (current != null) {
-            current.add(newList);
-            allLists.setValue(current); // Уведомляем фрагменты
-            DataManager.saveLists(context, current); // Сохраняем в JSON
+            current.add(list);
+            templateLists.setValue(current);
+            DataManager.saveTemplate(context, current);
         }
     }
 
+    public void finishShopping(Context context, ShoppingList copyList) {
+        if (historyLists == null) getHistoryLists(context);
+        List<ShoppingList> history = historyLists.getValue();
 
-    public void update(Context context) {
-        DataManager.saveLists(context, allLists.getValue());
-        allLists.setValue(allLists.getValue()); // Перерисовываем UI
+        history.add(0, copyList);
+        historyLists.setValue(history);
+        DataManager.saveHistory(context, history);
+
+    }
+
+    public void updateActiveList(Context context) {
+        DataManager.saveTemplate(context, templateLists.getValue());
+        templateLists.setValue(templateLists.getValue());
     }
 }

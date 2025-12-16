@@ -20,8 +20,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         showFragment(new MainListFragment());
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        setNavigation();
+    }
 
+    private void setNavigation() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         findViewById(R.id.btn_nav_start).setOnClickListener(v -> {
             showFragment(new MainListFragment());

@@ -1,69 +1,88 @@
 package com.example.shoppinglist.ui.fragments;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.shoppinglist.ui.MainActivity;
 import com.example.shoppinglist.R;
+import com.example.shoppinglist.ui.adapters.ShoppingListAdapter;
 import com.example.shoppinglist.viewmodel.ShoppingViewModel;
 import com.example.shoppinglist.data.ShoppingList;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+
 public class MainListFragment extends Fragment {
+
     private ShoppingViewModel viewModel;
+    private ShoppingListAdapter adapter;
 
     @Override
-    public android.view.View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container, android.os.Bundle savedInstanceState) {
-        android.view.View view = inflater.inflate(R.layout.fragment_main_list, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_main_list, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(ShoppingViewModel.class);
+
+        setupListView(view);
+        setupButtons(view);
+
+        viewModel.getTemplateLists(requireContext()).observe(getViewLifecycleOwner(), lists -> {
+            adapter.clear();
+            if (lists != null) {
+                adapter.addAll(lists);
+            }
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    private void setupListView(View view) {
+        ListView listView = view.findViewById(R.id.main_list_view);
+
+        adapter = new ShoppingListAdapter(requireContext(), new ArrayList<>());
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, v, position, id) -> {
+
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.fragment_container, new ListViewFragment(position))
+                    .addToBackStack(null)
+                    .commit();
+        });
+    }
+
+    private void setupButtons(View view) {
         ImageButton btnMenu = view.findViewById(R.id.btn_menu);
-
         btnMenu.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).openDrawer();
             }
         });
 
-
         ImageButton btnCreate = view.findViewById(R.id.create_list_button);
-
         btnCreate.setOnClickListener(v -> {
 
-            ShoppingList newList = new ShoppingList();
-
-            viewModel.addList(getContext(), newList); //TODO лучше потом добавлять
-            int newIndex = viewModel.getAllLists(getContext()).getValue().size() - 1;
-            openEditFragment(newIndex);
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.fragment_container, new EditListFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
-
-
-        android.widget.ListView listView = view.findViewById(R.id.main_list_view);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                getParentFragmentManager().beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                        .replace(R.id.fragment_container, new ListViewFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-
-        viewModel = new ViewModelProvider(requireActivity()).get(ShoppingViewModel.class);
-
-        viewModel.getAllLists(getContext()).observe(getViewLifecycleOwner(), lists -> {
-            // Как только данные в JSON или памяти изменятся, этот код сработает сам
-            adapter.clear();
-            adapter.addAll(lists);
-            adapter.notifyDataSetChanged();
-        });
-
-        return view;
     }
 }

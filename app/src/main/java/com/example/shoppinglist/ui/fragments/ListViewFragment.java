@@ -18,6 +18,9 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 
 public class ListViewFragment extends Fragment {
+    public ListViewFragment(int position) {
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_view, container, false);
