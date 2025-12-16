@@ -1,10 +1,13 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.ui.fragments;
 
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.shoppinglist.ui.MainActivity;
+import com.example.shoppinglist.R;
 
 public class HistoryFragment extends Fragment {
     @Override

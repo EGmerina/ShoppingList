@@ -1,4 +1,4 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.data;
 
 import java.util.ArrayList;
 

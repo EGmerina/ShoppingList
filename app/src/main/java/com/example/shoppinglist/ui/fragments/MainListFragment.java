@@ -1,6 +1,5 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.ui.fragments;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -8,7 +7,10 @@ import android.widget.ImageButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.ArrayList;
+import com.example.shoppinglist.ui.MainActivity;
+import com.example.shoppinglist.R;
+import com.example.shoppinglist.viewmodel.ShoppingViewModel;
+import com.example.shoppinglist.data.ShoppingList;
 
 public class MainListFragment extends Fragment {
     private ShoppingViewModel viewModel;
@@ -35,7 +37,7 @@ public class MainListFragment extends Fragment {
 
             viewModel.addList(getContext(), newList); //TODO лучше потом добавлять
             int newIndex = viewModel.getAllLists(getContext()).getValue().size() - 1;
-         //   openEditFragment(newIndex);
+            openEditFragment(newIndex);
         });
 
 

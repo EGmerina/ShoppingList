@@ -1,16 +1,16 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.ui;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.navigation.NavigationView;
+import com.example.shoppinglist.R;
+import com.example.shoppinglist.ui.fragments.DiagramFragment;
+import com.example.shoppinglist.ui.fragments.HistoryFragment;
+import com.example.shoppinglist.ui.fragments.MainListFragment;
 
 public class MainActivity extends AppCompatActivity {
 

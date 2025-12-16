@@ -1,4 +1,4 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.shoppinglist.R;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

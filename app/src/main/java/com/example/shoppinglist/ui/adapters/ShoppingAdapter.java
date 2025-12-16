@@ -1,9 +1,6 @@
-package com.example.shoppinglist;
+package com.example.shoppinglist.ui.adapters;
 
-import android.content.Context;
-import android.widget.ListAdapter;
-
-import java.util.List;
+import com.example.shoppinglist.R;
 
 public class ShoppingAdapter extends android.widget.ArrayAdapter<ShoppingItem>{
     public ShoppingAdapter(android.content.Context context, java.util.List<ShoppingItem> items) {
