@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -72,7 +73,7 @@ public class ViewListFragment extends Fragment {
                     .commit();
         });
 
-        ImageButton btnFinishShopping = view.findViewById(R.id.finish_button);
+        Button btnFinishShopping = view.findViewById(R.id.finish_button);
         btnFinishShopping.setOnClickListener(v -> {
             viewModel.addHistoryList(getContext(), new ShoppingList(viewModel.getSelectedList().getValue())); //TODO заполнить список только отмеченными
 

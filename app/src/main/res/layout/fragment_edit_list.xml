@@ -73,7 +73,7 @@
     </FrameLayout>
 
     <ListView
-        android:id="@+id/items_list_view"
+        android:id="@+id/items_edit_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent" />

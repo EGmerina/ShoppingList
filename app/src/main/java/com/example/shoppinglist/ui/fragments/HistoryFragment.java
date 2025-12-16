@@ -50,7 +50,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void setupListView(View view) {
-        ListView listView = view.findViewById(R.id.main_list_view);
+        ListView listView = view.findViewById(R.id.history_list_view);
 
         adapter = new ShoppingListAdapter(requireContext(), new ArrayList<>());
         listView.setAdapter(adapter);

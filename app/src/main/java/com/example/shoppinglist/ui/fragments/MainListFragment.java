@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -75,7 +76,7 @@ public class MainListFragment extends Fragment {
             }
         });
 
-        ImageButton btnCreate = view.findViewById(R.id.create_list_button);
+        Button btnCreate = view.findViewById(R.id.create_list_button);
         btnCreate.setOnClickListener(v -> {
             viewModel.selectList(new ShoppingList());
             getParentFragmentManager().beginTransaction()

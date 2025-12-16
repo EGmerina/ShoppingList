@@ -30,7 +30,7 @@ public class EditListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_view, container, false);
+        return inflater.inflate(R.layout.fragment_edit_list, container, false);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class EditListFragment extends Fragment {
     }
 
     private void setupListView(View view) {
-        ListView listView = view.findViewById(R.id.items_list_view);
+        ListView listView = view.findViewById(R.id.items_edit_list_view);
         listView.setAdapter(adapter);
         viewModel.getSelectedList().observe(getViewLifecycleOwner(), shoppingList -> {
             if (shoppingList != null) {

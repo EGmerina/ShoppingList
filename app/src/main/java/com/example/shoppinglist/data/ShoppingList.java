@@ -11,6 +11,7 @@ public class ShoppingList {
     public String date = null;
 
     public ShoppingList() {
+        items = new ArrayList<>();
     }
 
     public ShoppingList(ShoppingList copy) {
