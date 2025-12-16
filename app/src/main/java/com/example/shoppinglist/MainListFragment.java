@@ -1,28 +1,65 @@
 package com.example.shoppinglist;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.util.ArrayList;
 
 public class MainListFragment extends Fragment {
+    private ShoppingViewModel viewModel;
+
     @Override
     public android.view.View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container, android.os.Bundle savedInstanceState) {
         android.view.View view = inflater.inflate(R.layout.fragment_main_list, container, false);
 
-        android.widget.ListView listView = view.findViewById(R.id.main_list_view);
-        java.util.List<ShoppingItem> items = new java.util.ArrayList<>();
-        items.add(new ShoppingItem("List for Maria-ra", "12-12-2025", android.graphics.Color.parseColor("#98D8C1")));
-        items.add(new ShoppingItem("Weekend BBQ", "13-12-2025", android.graphics.Color.YELLOW));
-
-        listView.setAdapter(new ShoppingAdapter(getContext(), items));
 
         ImageButton btnMenu = view.findViewById(R.id.btn_menu);
 
         btnMenu.setOnClickListener(v -> {
-            // Получаем доступ к MainActivity и вызываем созданный нами метод
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).openDrawer();
             }
+        });
+
+
+        ImageButton btnCreate = view.findViewById(R.id.create_list_button);
+
+        btnCreate.setOnClickListener(v -> {
+
+            ShoppingList newList = new ShoppingList();
+
+            viewModel.addList(getContext(), newList); //TODO лучше потом добавлять
+            int newIndex = viewModel.getAllLists(getContext()).getValue().size() - 1;
+         //   openEditFragment(newIndex);
+        });
+
+
+        android.widget.ListView listView = view.findViewById(R.id.main_list_view);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .replace(R.id.fragment_container, new ListViewFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        viewModel = new ViewModelProvider(requireActivity()).get(ShoppingViewModel.class);
+
+        viewModel.getAllLists(getContext()).observe(getViewLifecycleOwner(), lists -> {
+            // Как только данные в JSON или памяти изменятся, этот код сработает сам
+            adapter.clear();
+            adapter.addAll(lists);
+            adapter.notifyDataSetChanged();
         });
 
         return view;
