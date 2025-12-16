@@ -4,19 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.shoppinglist.data.ShoppingList;
 import com.example.shoppinglist.ui.MainActivity;
 import com.example.shoppinglist.R;
 import com.example.shoppinglist.ui.adapters.ShoppingListAdapter;
 import com.example.shoppinglist.viewmodel.ShoppingViewModel;
-import com.example.shoppinglist.data.ShoppingList;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -59,9 +57,11 @@ public class MainListFragment extends Fragment {
 
         listView.setOnItemClickListener((parent, v, position, id) -> {
 
+            ShoppingList list = adapter.getItem(position);
+            viewModel.selectList(list);
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.fragment_container, new ListViewFragment(position))
+                    .replace(R.id.fragment_container, new ViewListFragment())
                     .addToBackStack(null)
                     .commit();
         });
@@ -77,7 +77,7 @@ public class MainListFragment extends Fragment {
 
         ImageButton btnCreate = view.findViewById(R.id.create_list_button);
         btnCreate.setOnClickListener(v -> {
-
+            viewModel.selectList(new ShoppingList());
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.fragment_container, new EditListFragment())

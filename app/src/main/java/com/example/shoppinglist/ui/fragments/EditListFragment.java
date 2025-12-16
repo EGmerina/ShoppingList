@@ -5,12 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.shoppinglist.R;
+import com.example.shoppinglist.data.ShoppingList;
+import com.example.shoppinglist.ui.adapters.ProductAdapter;
+import com.example.shoppinglist.viewmodel.ShoppingViewModel;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -19,16 +24,38 @@ import java.util.ArrayList;
 
 public class EditListFragment extends Fragment {
 
+    private ShoppingViewModel viewModel;
+
+    private ProductAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_list, container, false);
+        return inflater.inflate(R.layout.fragment_list_view, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(ShoppingViewModel.class);
+        setupListView(view);
+        setupButtons(view);
+    }
 
-        // Кнопка Назад
+    private void setupListView(View view) {
+        ListView listView = view.findViewById(R.id.items_list_view);
+        listView.setAdapter(adapter);
+        viewModel.getSelectedList().observe(getViewLifecycleOwner(), shoppingList -> {
+            if (shoppingList != null) {
+                EditText titleEdit = view.findViewById(R.id.et_title);
+                titleEdit.setText(shoppingList.title);
+                adapter = new ProductAdapter(requireContext(), shoppingList.items);
+                listView.setAdapter(adapter);
+            }
+        });
+    }
+
+    private void setupButtons(View view) {
+
         ImageButton btnBack = view.findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> {
             if (getParentFragmentManager() != null) {
@@ -36,29 +63,17 @@ public class EditListFragment extends Fragment {
             }
         });
 
-        // Кнопка Готово (сохранение)
         ImageButton btnDone = view.findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> {
-            // Тут логика сохранения
+            viewModel.updateTemplateList(getContext());
             getParentFragmentManager().popBackStack();
         });
 
         ImageButton btnDelete = view.findViewById(R.id.btn_delete);
-        btnDone.setOnClickListener(v -> {
-            // Тут логика удаления
+        btnDelete.setOnClickListener(v -> {
+            viewModel.deleteTemplateList(getContext(), viewModel.getSelectedList().getValue());
             getParentFragmentManager().popBackStack();
         });
 
-        // Заполнение списка (item 1, item 2...)
-        ListView listView = view.findViewById(R.id.items_list_view);
-        ArrayList<String> items = new ArrayList<>();
-        items.add("item 1");
-        items.add("item 2");
-        items.add("item 3");
-        items.add("item 4");
-
-        // Используем простой адаптер для демонстрации
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.product_item, R.id.item_text, items);
-        listView.setAdapter(adapter);
     }
 }

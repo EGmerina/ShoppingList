@@ -25,7 +25,7 @@ public class ProductAdapter extends android.widget.ArrayAdapter<String> {
             return convertView;
         }
         CheckBox checkBox = convertView.findViewById(R.id.item_checkbox);
-        android.widget.TextView data = convertView.findViewById(R.id.item_text);
+        android.widget.EditText data = convertView.findViewById(R.id.item_text);
         checkBox.setOnCheckedChangeListener(null);
 
         data.setText(product);

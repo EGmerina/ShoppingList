@@ -14,6 +14,15 @@ import java.util.List;
 public class ShoppingViewModel extends ViewModel {
     private MutableLiveData<List<ShoppingList>> templateLists = null;
     private MutableLiveData<List<ShoppingList>> historyLists = null;
+    private final MutableLiveData<ShoppingList> selectedList = new MutableLiveData<>();
+
+    public void selectList(ShoppingList list) {
+        selectedList.setValue(list);
+    }
+
+    public LiveData<ShoppingList> getSelectedList() {
+        return selectedList;
+    }
 
     public LiveData<List<ShoppingList>> getTemplateLists(Context context) {
         if (templateLists == null) {
@@ -41,7 +50,7 @@ public class ShoppingViewModel extends ViewModel {
         }
     }
 
-    public void finishShopping(Context context, ShoppingList copyList) {
+    public void addHistoryList(Context context, ShoppingList copyList) {
         if (historyLists == null) getHistoryLists(context);
         List<ShoppingList> history = historyLists.getValue();
 
@@ -51,8 +60,18 @@ public class ShoppingViewModel extends ViewModel {
 
     }
 
-    public void updateActiveList(Context context) {
+    public void updateTemplateList(Context context) {
         DataManager.saveTemplate(context, templateLists.getValue());
         templateLists.setValue(templateLists.getValue());
+    }
+
+    public void deleteTemplateList(Context context, ShoppingList listToDelete) {
+        List<ShoppingList> current = templateLists.getValue();
+
+        if (current != null) {
+            current.remove(listToDelete);
+            templateLists.setValue(current);
+            DataManager.saveTemplate(context, current);
+        }
     }
 }

@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:buttonTint="#98D8C1" />
 
-    <TextView
+    <EditText
         android:id="@+id/item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:text="item 1"
+        android:hint="item"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 </LinearLayout>
