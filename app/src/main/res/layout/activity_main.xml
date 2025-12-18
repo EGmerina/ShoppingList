@@ -42,7 +42,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/food"
+                android:src="@drawable/food2"
                 app:shapeAppearanceOverlay="@style/CircleAppearance" />
 
             <TextView
