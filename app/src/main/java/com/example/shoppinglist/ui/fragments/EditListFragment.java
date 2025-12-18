@@ -21,6 +21,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EditListFragment extends Fragment {
 
@@ -48,6 +49,12 @@ public class EditListFragment extends Fragment {
             if (shoppingList != null) {
                 EditText titleEdit = view.findViewById(R.id.et_title);
                 titleEdit.setText(shoppingList.title);
+                if (shoppingList.items == null) {
+                    shoppingList.items = new ArrayList<>();
+                }
+                if (shoppingList.items.isEmpty()) {
+                    shoppingList.items.add("");
+                }
                 adapter = new ProductAdapter(requireContext(), shoppingList.items);
                 listView.setAdapter(adapter);
             }
@@ -65,8 +72,40 @@ public class EditListFragment extends Fragment {
 
         ImageButton btnDone = view.findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> {
-            viewModel.updateTemplateList(getContext());
-            getParentFragmentManager().popBackStack();
+
+            if (adapter != null) {
+                // 1. Берем продукты
+                List<String> currentItems = adapter.getAllItems();
+
+                // 2. Получаем текущий редактируемый объект
+                ShoppingList currentList = viewModel.getSelectedList().getValue();
+
+                if (currentList != null) {
+                    // Обновляем данные в объекте
+                    EditText etTitle = view.findViewById(R.id.et_title);
+                    String newTitle = etTitle.getText().toString();
+
+                    // Если названия нет, дадим дефолтное, чтобы не терять список
+                    if (newTitle.trim().isEmpty()) {
+                        newTitle = "Новый список";
+                    }
+                    currentList.title = newTitle;
+                    currentList.items = (ArrayList<String>) currentItems; // Каст (ArrayList) не обязателен
+
+                    // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ НИЖЕ ---
+
+                    // 3. Получаем общий список всех шаблонов
+                    List<ShoppingList> allLists = viewModel.getTemplateLists(requireContext()).getValue();
+
+                    // 4. Проверяем: если нашего списка нет внутри общего списка, добавляем его
+                    if (allLists != null && !allLists.contains(currentList)) {
+                        viewModel.addTemplateList(requireContext(), currentList);
+                    } else {
+                        // Если он уже там есть, просто сохраняем обновления
+                        viewModel.updateTemplateList(requireContext());
+                    }
+                }
+            }
         });
 
         ImageButton btnDelete = view.findViewById(R.id.btn_delete);

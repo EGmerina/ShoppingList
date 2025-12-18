@@ -67,9 +67,6 @@
 
             <ImageView
                 style="@style/MyMenuIconStyle"/>
-<!--                android:src="@drawable/ic_list" -->
-                />
-
             <TextView
                 style="@style/MyMenuTextStyle"
                 android:text="@string/start_title" />
@@ -81,9 +78,6 @@
 
             <ImageView
                 style="@style/MyMenuIconStyle"/>
-<!--                android:src="@drawable/ic_history" -->
-                />
-
             <TextView
                 style="@style/MyMenuTextStyle"
                 android:text="@string/history_title" />
@@ -95,9 +89,6 @@
 
             <ImageView
                 style="@style/MyMenuIconStyle"/>
-<!--                android:src="@drawable/ic_diagram" -->
-                />
-
             <TextView
                 style="@style/MyMenuTextStyle"
                 android:text="@string/analysis_title" />
@@ -115,10 +106,6 @@
 
             <ImageView
                 style="@style/MyMenuIconStyle"/>
-<!--                android:src="@drawable/ic_exit"-->
-
-
-                />
 
             <TextView
                 style="@style/MyMenuTextStyle"

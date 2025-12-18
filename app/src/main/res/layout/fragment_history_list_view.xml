@@ -70,16 +70,5 @@
         android:layout_weight="1"
         android:divider="@android:color/transparent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/finish_button"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:text="@string/finish_shipping"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:backgroundTint="#424242"
-        app:cornerRadius="12dp" />
 
 </LinearLayout>

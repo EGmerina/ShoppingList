@@ -1,46 +1,125 @@
 package com.example.shoppinglist.ui.adapters;
 
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-
-import androidx.core.content.ContextCompat;
+import android.widget.EditText;
 
 import com.example.shoppinglist.R;
 
-public class ProductAdapter extends android.widget.ArrayAdapter<String> {
-    public ProductAdapter(android.content.Context context, java.util.List<String> items) {
+import java.util.ArrayList;
+import java.util.List;
+
+// Теперь наследуемся от String
+public class ProductAdapter extends ArrayAdapter<String> {
+
+    private final Context context;
+    private final List<String> items; // Список строк
+    private final SparseBooleanArray checkedStates = new SparseBooleanArray();
+
+    public ProductAdapter(Context context, List<String> items) {
         super(context, 0, items);
+        this.context = context;
+        this.items = items;
     }
 
     @Override
-    public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
         if (convertView == null) {
-            convertView = android.view.LayoutInflater.from(getContext()).inflate(R.layout.product_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.product_item, parent, false);
+            holder = new ViewHolder();
+            holder.checkBox = convertView.findViewById(R.id.item_checkbox);
+            holder.editText = convertView.findViewById(R.id.item_text);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        String product = getItem(position);
-        if (product == null) {
-            System.out.println("product not found");
-            return convertView;
+
+        String currentText = getItem(position);
+
+        // 1. Снимаем старые слушатели
+        holder.checkBox.setOnCheckedChangeListener(null);
+        if (holder.textWatcher != null) {
+            holder.editText.removeTextChangedListener(holder.textWatcher);
         }
-        CheckBox checkBox = convertView.findViewById(R.id.item_checkbox);
-        android.widget.EditText data = convertView.findViewById(R.id.item_text);
-        checkBox.setOnCheckedChangeListener(null);
+        holder.editText.setOnKeyListener(null);
 
-        data.setText(product);
+        // 2. Устанавливаем данные
+        holder.checkBox.setChecked(checkedStates.get(position, false));
+        holder.editText.setText(currentText);
 
-
-        // Вешаем новый слушатель на галочку
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
+        // 3. Логика Чекбокса (осталась прежней)
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                checkBox.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                checkedStates.put(position, true);
             } else {
-                checkBox.setPaintFlags(checkBox.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                checkedStates.delete(position);
             }
         });
 
+        // 4. Логика ввода текста (ИЗМЕНИЛАСЬ)
+        holder.textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Мы не можем изменить String, поэтому мы обновляем элемент в списке по индексу
+                items.set(position, s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+        holder.editText.addTextChangedListener(holder.textWatcher);
+
+        // 5. Логика Enter (добавляем пустую строку "")
+        holder.editText.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                items.add(""); // Добавляем пустую строку
+                notifyDataSetChanged();
+                return true;
+            }
+            return false;
+        });
+
         return convertView;
+    }
+
+    public List<String> getAllItems() {
+        List<String> result = new ArrayList<>();
+        for (String item : items) {
+            // Проверяем, что строка не пустая и не состоит из одних пробелов
+            if (item != null && !item.trim().isEmpty()) {
+                result.add(item.trim());
+            }
+        }
+        return result;
+    }
+
+    // Возвращаем список строк, которые были отмечены
+    public List<String> getCheckedItems() {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (checkedStates.get(i)) {
+                result.add(items.get(i));
+            }
+        }
+        return result;
+    }
+
+    private static class ViewHolder {
+        CheckBox checkBox;
+        EditText editText;
+        TextWatcher textWatcher;
     }
 }

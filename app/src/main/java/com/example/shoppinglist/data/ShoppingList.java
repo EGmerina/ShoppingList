@@ -23,4 +23,14 @@ public class ShoppingList {
         String dateString = formatter.format(now);
         this.date = dateString;
     }
+
+    public ShoppingList(ArrayList<String> items, String title) {
+        this.title = title;
+        this.items = new ArrayList<>(items);
+
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+        String dateString = formatter.format(now);
+        this.date = dateString;
+    }
 }

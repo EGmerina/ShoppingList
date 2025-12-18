@@ -23,6 +23,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ViewListFragment extends Fragment {
     private ShoppingViewModel viewModel;
@@ -64,18 +65,18 @@ public class ViewListFragment extends Fragment {
             }
         });
 
-        ImageButton btnEdit = view.findViewById(R.id.btn_edit);
-        btnEdit.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.fragment_container, new EditListFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
 
         Button btnFinishShopping = view.findViewById(R.id.finish_button);
         btnFinishShopping.setOnClickListener(v -> {
-            viewModel.addHistoryList(getContext(), new ShoppingList(viewModel.getSelectedList().getValue())); //TODO заполнить список только отмеченными
+
+            if (adapter != null) {
+                List<String> boughtItems = adapter.getCheckedItems();
+                ShoppingList newList = new ShoppingList((ArrayList<String>) boughtItems, viewModel.getSelectedList().getValue().title);
+                viewModel.addHistoryList(getContext(), newList);
+                viewModel.updateTemplateList(getContext());
+            }
+
+            // viewModel.addHistoryList(getContext(), new ShoppingList(viewModel.getSelectedList().getValue())); //TODO заполнить список только отмеченными
 
             if (getParentFragmentManager() != null) {
                 getParentFragmentManager().popBackStack();
