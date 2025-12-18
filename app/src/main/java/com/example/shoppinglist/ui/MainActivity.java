@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         });
 
-        findViewById(R.id.btn_nav_exit).setOnClickListener(v -> finish());
+        findViewById(R.id.btn_nav_exit).setOnClickListener(v -> finishAndRemoveTask());
     }
 
 
