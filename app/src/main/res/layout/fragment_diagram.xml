@@ -47,6 +47,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -57,5 +58,7 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart"
         android:layout_width="match_parent"
-        android:layout_height="350dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 </LinearLayout>
