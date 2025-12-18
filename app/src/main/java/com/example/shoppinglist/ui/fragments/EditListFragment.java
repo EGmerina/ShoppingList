@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -14,7 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.shoppinglist.R;
 import com.example.shoppinglist.data.ShoppingList;
-import com.example.shoppinglist.ui.adapters.ProductAdapter;
+import com.example.shoppinglist.ui.adapters.CheckProductAdapter;
+import com.example.shoppinglist.ui.adapters.EditProductAdapter;
 import com.example.shoppinglist.viewmodel.ShoppingViewModel;
 
 import org.jspecify.annotations.NonNull;
@@ -27,7 +27,7 @@ public class EditListFragment extends Fragment {
 
     private ShoppingViewModel viewModel;
 
-    private ProductAdapter adapter;
+    private EditProductAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class EditListFragment extends Fragment {
                 if (shoppingList.items.isEmpty()) {
                     shoppingList.items.add("");
                 }
-                adapter = new ProductAdapter(requireContext(), shoppingList.items);
+                adapter = new EditProductAdapter(requireContext(), shoppingList.items);
                 listView.setAdapter(adapter);
             }
         });
@@ -106,12 +106,15 @@ public class EditListFragment extends Fragment {
                     }
                 }
             }
+            if (getParentFragmentManager() != null) {
+                getParentFragmentManager().popBackStack();
+            }
         });
 
         ImageButton btnDelete = view.findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(v -> {
             viewModel.deleteTemplateList(getContext(), viewModel.getSelectedList().getValue());
-            getParentFragmentManager().popBackStack();
+            getParentFragmentManager().popBackStack("start menu", 0);
         });
 
     }

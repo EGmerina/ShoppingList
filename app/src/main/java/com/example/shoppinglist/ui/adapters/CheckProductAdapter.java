@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.shoppinglist.R;
 
@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Теперь наследуемся от String
-public class ProductAdapter extends ArrayAdapter<String> {
+public class CheckProductAdapter extends ArrayAdapter<String> {
 
     private final Context context;
     private final List<String> items; // Список строк
     private final SparseBooleanArray checkedStates = new SparseBooleanArray();
 
-    public ProductAdapter(Context context, List<String> items) {
+    public CheckProductAdapter(Context context, List<String> items) {
         super(context, 0, items);
         this.context = context;
         this.items = items;
@@ -35,10 +35,10 @@ public class ProductAdapter extends ArrayAdapter<String> {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.product_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.check_product_item, parent, false);
             holder = new ViewHolder();
             holder.checkBox = convertView.findViewById(R.id.item_checkbox);
-            holder.editText = convertView.findViewById(R.id.item_text);
+            holder.textView = convertView.findViewById(R.id.item_text);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -49,13 +49,13 @@ public class ProductAdapter extends ArrayAdapter<String> {
         // 1. Снимаем старые слушатели
         holder.checkBox.setOnCheckedChangeListener(null);
         if (holder.textWatcher != null) {
-            holder.editText.removeTextChangedListener(holder.textWatcher);
+            holder.textView.removeTextChangedListener(holder.textWatcher);
         }
-        holder.editText.setOnKeyListener(null);
+        holder.textView.setOnKeyListener(null);
 
         // 2. Устанавливаем данные
         holder.checkBox.setChecked(checkedStates.get(position, false));
-        holder.editText.setText(currentText);
+        holder.textView.setText(currentText);
 
         // 3. Логика Чекбокса (осталась прежней)
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -80,10 +80,10 @@ public class ProductAdapter extends ArrayAdapter<String> {
             @Override
             public void afterTextChanged(Editable s) {}
         };
-        holder.editText.addTextChangedListener(holder.textWatcher);
+        holder.textView.addTextChangedListener(holder.textWatcher);
 
         // 5. Логика Enter (добавляем пустую строку "")
-        holder.editText.setOnKeyListener((v, keyCode, event) -> {
+        holder.textView.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 items.add(""); // Добавляем пустую строку
                 notifyDataSetChanged();
@@ -119,7 +119,7 @@ public class ProductAdapter extends ArrayAdapter<String> {
 
     private static class ViewHolder {
         CheckBox checkBox;
-        EditText editText;
+        TextView textView;
         TextWatcher textWatcher;
     }
 }

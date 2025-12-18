@@ -40,7 +40,7 @@ public class HistoryFragment extends Fragment {
         setupListView(view);
         setupButtons(view);
 
-        viewModel.getTemplateLists(requireContext()).observe(getViewLifecycleOwner(), lists -> {
+        viewModel.getHistoryLists(requireContext()).observe(getViewLifecycleOwner(), lists -> {
             adapter.clear();
             if (lists != null) {
                 adapter.addAll(lists);
@@ -61,7 +61,7 @@ public class HistoryFragment extends Fragment {
             viewModel.selectList(list);
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.fragment_container, new ViewListFragment())
+                    .replace(R.id.fragment_container, new ViewHistoryListFragment())
                     .addToBackStack(null)
                     .commit();
         });

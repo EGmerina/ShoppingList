@@ -52,12 +52,11 @@
         android:background="#CCCCCC"
         android:padding="2dp">
 
-        <EditText
+        <TextView
             android:id="@+id/et_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:hint="Title"
             android:padding="12dp"
             android:textSize="22sp"
             android:textStyle="bold" />

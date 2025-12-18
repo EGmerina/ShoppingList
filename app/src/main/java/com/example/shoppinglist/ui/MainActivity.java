@@ -17,8 +17,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        showFragment(new MainListFragment());
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new MainListFragment())
+                    .addToBackStack("start menu")
+                    .commit();
+        }
 
         setNavigation();
     }

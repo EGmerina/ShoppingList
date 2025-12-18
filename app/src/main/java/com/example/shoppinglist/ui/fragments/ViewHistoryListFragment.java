@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,24 +12,20 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.shoppinglist.R;
-import com.example.shoppinglist.data.ShoppingList;
-import com.example.shoppinglist.ui.adapters.CheckProductAdapter;
+import com.example.shoppinglist.ui.adapters.ViewProductAdapter;
 import com.example.shoppinglist.viewmodel.ShoppingViewModel;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ViewListFragment extends Fragment {
+public class ViewHistoryListFragment extends Fragment {
     private ShoppingViewModel viewModel;
 
-    private CheckProductAdapter adapter;
+    private ViewProductAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_view, container, false);
+        return inflater.inflate(R.layout.fragment_history_list_view, container, false);
     }
 
     @Override
@@ -47,9 +41,9 @@ public class ViewListFragment extends Fragment {
         listView.setAdapter(adapter);
         viewModel.getSelectedList().observe(getViewLifecycleOwner(), shoppingList -> {
             if (shoppingList != null) {
-                TextView titleEdit = view.findViewById(R.id.et_title);
-                titleEdit.setText(shoppingList.title);
-                adapter = new CheckProductAdapter(requireContext(), shoppingList.items);
+                TextView title = view.findViewById(R.id.et_title);
+                title.setText(shoppingList.title);
+                adapter = new ViewProductAdapter(requireContext(), shoppingList.items);
                 listView.setAdapter(adapter);
             }
         });
@@ -64,30 +58,12 @@ public class ViewListFragment extends Fragment {
             }
         });
 
-        ImageButton btnEdit = view.findViewById(R.id.btn_edit);
-        btnEdit.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.fragment_container, new EditListFragment())
-                    .addToBackStack(null)
-                    .commit();
+        ImageButton btnDelete = view.findViewById(R.id.btn_delete);
+        btnDelete.setOnClickListener(v -> {
+            viewModel.deleteHistoryList(getContext(), viewModel.getSelectedList().getValue());
+            getParentFragmentManager().popBackStack();
         });
 
-
-        Button btnFinishShopping = view.findViewById(R.id.finish_button);
-        btnFinishShopping.setOnClickListener(v -> {
-
-            if (adapter != null) {
-                List<String> boughtItems = adapter.getCheckedItems();
-                ShoppingList newList = new ShoppingList((ArrayList<String>) boughtItems, viewModel.getSelectedList().getValue().title);
-                viewModel.addHistoryList(getContext(), newList);
-                viewModel.updateTemplateList(getContext());
-            }
-
-            if (getParentFragmentManager() != null) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
     }
 
 }

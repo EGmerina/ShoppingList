@@ -74,4 +74,14 @@ public class ShoppingViewModel extends ViewModel {
             DataManager.saveTemplate(context, current);
         }
     }
+
+    public void deleteHistoryList(Context context, ShoppingList listToDelete) {
+        List<ShoppingList> current = historyLists.getValue();
+
+        if (current != null) {
+            current.remove(listToDelete);
+            historyLists.setValue(current);
+            DataManager.saveHistory(context, current);
+        }
+    }
 }
