@@ -73,39 +73,60 @@ public class EditListFragment extends Fragment {
         ImageButton btnDone = view.findViewById(R.id.btn_done);
         btnDone.setOnClickListener(v -> {
 
-            if (adapter != null) {
-                // 1. Берем продукты
-                List<String> currentItems = adapter.getAllItems();
+            if (adapter == null) return;
 
-                // 2. Получаем текущий редактируемый объект
-                ShoppingList currentList = viewModel.getSelectedList().getValue();
+            // 1. Сначала собираем все данные
+            List<String> currentItems = adapter.getAllItems();
+            EditText etTitle = view.findViewById(R.id.et_title);
+            String newTitle = etTitle.getText().toString().trim(); // .trim() убирает пробелы по краям
 
-                if (currentList != null) {
-                    // Обновляем данные в объекте
-                    EditText etTitle = view.findViewById(R.id.et_title);
-                    String newTitle = etTitle.getText().toString();
+            // ПРОВЕРКА №1: Список не должен быть пустым
+            if (currentItems.isEmpty()) {
+                showErrorDialog("The list is empty! Add at least one product.");
+                return; // Останавливаем выполнение, не сохраняем и не выходим
+            }
 
-                    // Если названия нет, дадим дефолтное, чтобы не терять список
-                    if (newTitle.trim().isEmpty()) {
-                        newTitle = "Новый список";
-                    }
-                    currentList.title = newTitle;
-                    currentList.items = (ArrayList<String>) currentItems; // Каст (ArrayList) не обязателен
+            // ПРОВЕРКА №2: Название не должно быть пустым
+            if (newTitle.isEmpty()) {
+                showErrorDialog("Please enter a list title.");
+                return;
+            }
 
-                    // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ НИЖЕ ---
+            // ПРОВЕРКА №3: Уникальность имени
+            ShoppingList currentList = viewModel.getSelectedList().getValue();
+            List<ShoppingList> allLists = viewModel.getTemplateLists(requireContext()).getValue();
 
-                    // 3. Получаем общий список всех шаблонов
-                    List<ShoppingList> allLists = viewModel.getTemplateLists(requireContext()).getValue();
-
-                    // 4. Проверяем: если нашего списка нет внутри общего списка, добавляем его
-                    if (allLists != null && !allLists.contains(currentList)) {
-                        viewModel.addTemplateList(requireContext(), currentList);
-                    } else {
-                        // Если он уже там есть, просто сохраняем обновления
-                        viewModel.updateTemplateList(requireContext());
+            boolean isNameTaken = false;
+            if (allLists != null) {
+                for (ShoppingList list : allLists) {
+                    // Если имя совпадает (игнорируя регистр) И это не тот же самый список, который мы сейчас редактируем
+                    if (list.title.equalsIgnoreCase(newTitle) && list != currentList) {
+                        isNameTaken = true;
+                        break;
                     }
                 }
             }
+
+            if (isNameTaken) {
+                showErrorDialog("A list with this name already exists. Please think of a different name.");
+                return;
+            }
+
+            // --- ЕСЛИ ВСЕ ПРОВЕРКИ ПРОЙДЕНЫ, СОХРАНЯЕМ ---
+
+            if (currentList != null) {
+                currentList.title = newTitle;
+                currentList.items = (java.util.ArrayList<String>) currentItems;
+
+                // Если списка еще нет в базе (новый) - добавляем, иначе обновляем
+                if (allLists != null && !allLists.contains(currentList)) {
+                    viewModel.addTemplateList(requireContext(), currentList);
+                } else {
+                    viewModel.updateTemplateList(requireContext());
+                }
+            }
+
+            // Выходим назад
             if (getParentFragmentManager() != null) {
                 getParentFragmentManager().popBackStack();
             }
@@ -117,5 +138,13 @@ public class EditListFragment extends Fragment {
             getParentFragmentManager().popBackStack("start menu", 0);
         });
 
+    }
+
+    private void showErrorDialog(String message) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Note")
+                .setMessage(message)
+                .setPositiveButton("OK", null) // Кнопка, чтобы просто закрыть диалог
+                .show();
     }
 }
